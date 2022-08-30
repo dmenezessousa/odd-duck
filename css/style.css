@@ -20,6 +20,7 @@ h1 {
 #images {
   display: flex;
   height: 300px;
+  justify-content: center;
 }
 
 #images img {
