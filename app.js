@@ -1,12 +1,14 @@
 "use script";
 
 function createImage(name, src, imgHasShown) {
+  // constructor function
   this.name = name;
   this.src = src;
   this.imgHasShown = imgHasShown;
 }
 
 let imagesName = [
+  //array of image names
   "bag",
   "banana",
   "bathroom",
@@ -29,6 +31,7 @@ let imagesName = [
 ];
 
 let imagesSrc = [
+  //array of image sources
   "img/bag.jpg",
   "img/banana.jpg",
   "img/bathroom.jpg",
@@ -55,22 +58,27 @@ let totalClicks = 0;
 let totalClicksPerImage = [];
 
 function createImages() {
+  //adds images to array
   for (let i = 0; i < imagesName.length; i++) {
     images.push(new createImage(imagesName[i], imagesSrc[i], 0));
   }
 }
+// console.log(images);
 
 function renderImages() {
-  for (let i = 0; i < images.length; i++) {
+  //renders images to page
+  for (let i = 0; i < 3; i++) {
     let img = document.createElement("img");
-    img.src = images[i].src;
-    img.id = images[i].name;
+    let random = Math.floor(Math.random() * images.length);
+    img.src = images[random].src;
+    img.id = images[random].name;
     img.addEventListener("click", handleClick);
     document.getElementById("images").appendChild(img);
   }
 }
 
 function handleClick(event) {
+  //handles click event
   totalClicks++;
   let id = event.target.id;
   for (let i = 0; i < images.length; i++) {
@@ -84,6 +92,7 @@ function handleClick(event) {
 }
 
 function renderResults() {
+  //renders results to page
   for (let i = 0; i < images.length; i++) {
     let li = document.createElement("li");
     li.textContent = `${images[i].name} has been clicked ${images[i].imgHasShown} times`;
@@ -91,4 +100,6 @@ function renderResults() {
   }
 }
 
-createImages();
+createImages(); //calls createImages function
+renderImages(); //calls renderImages function
+renderResults(); //calls renderResults function
