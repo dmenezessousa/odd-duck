@@ -55,7 +55,6 @@ let imagesSrc = [
 
 let images = [];
 let totalClicks = 0;
-let totalClicksPerImage = [];
 
 function createImages() {
   //adds images to array
@@ -72,7 +71,7 @@ function renderImages() {
     let random = Math.floor(Math.random() * images.length);
     img.src = images[random].src;
     img.id = images[random].name;
-    img.addEventListener("click", handleClick);
+    img.addEventListener("click", handleClick); //adds event listener to image
     document.getElementById("images").appendChild(img);
   }
 }
@@ -83,23 +82,27 @@ function handleClick(event) {
   let id = event.target.id;
   for (let i = 0; i < images.length; i++) {
     if (id === images[i].name) {
-      images[i].imgHasShown++;
+      //if the id of the image is the same as the name of the image
+      images[i].imgHasShown++; //add one to the number of times the image has been clicked
     }
   }
   if (totalClicks === 25) {
-    renderResults();
+    //if the total clicks is 25
+    renderResults(); //render the results
   }
 }
 
 function renderResults() {
   //renders results to page
   for (let i = 0; i < images.length; i++) {
+    let ul = document.createElement("ul");
     let li = document.createElement("li");
     li.textContent = `${images[i].name} has been clicked ${images[i].imgHasShown} times`;
-    document.getElementById("results").appendChild(li);
+    ul.appendChild(li);
+    document.getElementById("results").appendChild(ul);
   }
 }
 
 createImages(); //calls createImages function
 renderImages(); //calls renderImages function
-renderResults(); //calls renderResults function
+renderResults();
