@@ -86,10 +86,13 @@ function handleClick(event) {
       images[i].imgHasShown++; //add one to the number of times the image has been clicked
     }
   }
+
   if (totalClicks === 25) {
     //if the total clicks is 25
     renderResults(); //render the results
   }
+  document.getElementById("images").innerHTML = "";
+  renderImages(); //render the images
 }
 
 function renderResults() {
@@ -105,4 +108,4 @@ function renderResults() {
 
 createImages(); //calls createImages function
 renderImages(); //calls renderImages function
-renderResults();
+// renderResults();
