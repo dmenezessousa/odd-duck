@@ -1,5 +1,9 @@
 "use script";
 
+let images = [];
+let totalClicks = 0;
+let clickCounter = 25;
+
 function createImage(name, src, imgHasShown) {
   // constructor function
   this.name = name;
@@ -53,9 +57,6 @@ let imagesSrc = [
   "img/wine-glass.jpg",
 ];
 
-let images = [];
-let totalClicks = 0;
-
 function createImages() {
   //adds images to array
   for (let i = 0; i < imagesName.length; i++) {
@@ -79,6 +80,10 @@ function renderImages() {
 function handleClick(event) {
   //handles click event
   totalClicks++;
+  clickCounter--;
+  document.getElementById(
+    "clickCounter"
+  ).textContent = `Clicks left: ${clickCounter}`;
   let id = event.target.id;
   for (let i = 0; i < images.length; i++) {
     if (id === images[i].name) {
@@ -86,24 +91,83 @@ function handleClick(event) {
       images[i].imgHasShown++; //add one to the number of times the image has been clicked
     }
   }
-
-  if (totalClicks === 25) {
-    //if the total clicks is 25
-    renderResults(); //render the results
+  if (clickCounter === 0) {
+    document.getElementById("clickCounter").textContent = "View Results";
+    document
+      .getElementById(images.name)
+      .removeEventListener("click", handleClick);
   }
+
   document.getElementById("images").innerHTML = "";
   renderImages(); //render the images
 }
 
-function renderResults() {
-  //renders results to page
-  for (let i = 0; i < images.length; i++) {
-    let ul = document.createElement("ul");
-    let li = document.createElement("li");
-    li.textContent = `${images[i].name} has been clicked ${images[i].imgHasShown} times`;
-    ul.appendChild(li);
-    document.getElementById("results").appendChild(ul);
+let button = document.getElementById("clickCounter");
+button.addEventListener("click", function () {
+  if (clickCounter === 0) {
+    document.getElementById("clickCounter").textContent = "View Results";
+    document.getElementById("images").removeEventListener("click", handleClick);
+    addTableHeader();
+    renderResults();
+    renderChart();
   }
+});
+
+function addTableHeader() {
+  //adds table header to page
+  let tableRow = document.createElement("tr");
+  let tableHeader = document.createElement("th");
+  tableHeader.textContent = "Image";
+  tableRow.appendChild(tableHeader);
+  tableHeader = document.createElement("th");
+  tableHeader.textContent = "Times Clicked";
+  tableRow.appendChild(tableHeader);
+  document.getElementById("results").appendChild(tableRow);
+}
+
+function renderResults() {
+  for (let i = 0; i < images.length; i++) {
+    let tableRow = document.createElement("tr");
+    let tableData = document.createElement("td");
+    tableData.textContent = images[i].name;
+    tableRow.appendChild(tableData);
+    tableData = document.createElement("td");
+    tableData.textContent = images[i].imgHasShown;
+    tableRow.appendChild(tableData);
+    document.getElementById("results").appendChild(tableRow);
+  }
+}
+function renderChart() {
+  let ctx = document.getElementById("myChart").getContext("2d");
+  let myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: imagesName,
+      datasets: [
+        {
+          label: "Times Clicked",
+          data: [],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+          ],
+          borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+    },
+  });
 }
 
 createImages(); //calls createImages function

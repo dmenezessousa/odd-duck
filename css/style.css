@@ -34,16 +34,23 @@ h1 {
   margin-top: 40px;
 }
 
-#results ul {
-  padding: 0;
-  margin: 0;
-  margin-top: 20px;
+table {
+  border-collapse: collapse;
+  width: 20%;
 }
 
-#results li {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  margin-top: 10px;
-  margin: 10px;
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
 }
