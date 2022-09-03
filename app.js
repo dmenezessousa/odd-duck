@@ -75,12 +75,17 @@ function renderImages() {
     img.addEventListener("click", handleClick); //adds event listener to image
     document.getElementById("images").appendChild(img);
   }
+  if (clickCounter === 0) {
+    document.getElementById("clickCounter").textContent = "View Results";
+    document.querySelectorAll("img").forEach((img) => {
+      img.removeEventListener("click", handleClick);
+    });
+  }
 }
 
 function handleClick(event) {
   //handles click event
   totalClicks++;
-  clickCounter--;
   document.getElementById(
     "clickCounter"
   ).textContent = `Clicks left: ${clickCounter}`;
@@ -93,15 +98,22 @@ function handleClick(event) {
   }
   if (clickCounter === 0) {
     document.getElementById("clickCounter").textContent = "View Results";
-    document
-      .getElementById(images.name)
-      .removeEventListener("click", handleClick);
+    document.querySelectorAll("img").forEach((img) => {
+      img.removeEventListener("click", handleClick);
+    });
+  } else {
+    clickCounter--;
   }
 
   document.getElementById("images").innerHTML = "";
   renderImages(); //render the images
 }
 
+function removeClickHandler() {
+  document
+    .getElementById("clickCounter")
+    .removeEventListener("click", handleClick);
+}
 let button = document.getElementById("clickCounter");
 button.addEventListener("click", function () {
   if (clickCounter === 0) {
@@ -139,6 +151,13 @@ function renderResults() {
 }
 
 function renderChart() {
+  let imgClicked = [];
+  let imgShown = [];
+  for (let i = 0; i < images.length; i++) {
+    imgClicked.push(images[i].imgHasShown);
+    imgShown.push(images[i].imgHasShown);
+  }
+
   let ctx = document.getElementById("myChart").getContext("2d");
   let myChart = new Chart(ctx, {
     type: "bar",
@@ -147,11 +166,15 @@ function renderChart() {
       datasets: [
         {
           label: "Times Clicked",
-          data: [],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-          ],
+          data: imgClicked,
+          backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+          borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+          borderWidth: 1,
+        },
+        {
+          label: "Times Showed",
+          data: imgShown,
+          backgroundColor: ["rgba(54, 162, 235, 0.2)"],
           borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
           borderWidth: 1,
         },
