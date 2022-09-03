@@ -9,20 +9,23 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- Header starts here -->
     <header>
       <nav>
-        <p>Odd Duck</p>
+        <p>Odd Duck Products</p>
       </nav>
     </header>
+    <!-- Header ends here -->
+
+    <!-- main section starts here -->
     <main>
-      <h1>Please, Choose your favorite image</h1>
+      <h1>Please, Vote on one of the Images bellow:</h1>
       <div id="images"></div>
       <div>
-        <button id="clickCounter">Clicks Left: 25</button>
+        <button id="clickCounter">Votes Left: 25</button>
       </div>
-
       <div id="showResults">
-        <div>
+        <div id="table">
           <table id="results"></table>
         </div>
         <div id="chart">
@@ -30,7 +33,15 @@
         </div>
       </div>
     </main>
-    <footer></footer>
+    <!-- main section ends here -->
+
+    <!-- footer section starts here -->
+    <footer>
+      <div>
+        <p>&copy Diego Sousa 2022</p>
+      </div>
+    </footer>
+    <!-- footer section ends here -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <script src="app.js"></script>
   </body>

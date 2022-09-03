@@ -1,14 +1,15 @@
 "use script";
 
-let images = [];
-let totalClicks = 0;
-let clickCounter = 25;
+let images = []; //array of images
+let totalClicks = 0; //total number of clicks
+let clickCounter = 25; //number of clicks left
 
-function createImage(name, src, imgHasShown) {
+function createImage(name, src, imgHasShown, timesShown) {
   // constructor function
   this.name = name;
   this.src = src;
   this.imgHasShown = imgHasShown;
+  this.timesShown = timesShown;
 }
 
 let imagesName = [
@@ -60,21 +61,57 @@ let imagesSrc = [
 function createImages() {
   //adds images to array
   for (let i = 0; i < imagesName.length; i++) {
-    images.push(new createImage(imagesName[i], imagesSrc[i], 0));
+    images.push(new createImage(imagesName[i], imagesSrc[i], 0, 0));
   }
 }
-// console.log(images);
+
+//Local Storage
+function saveToLocalStorage() {
+  let stringifiedImages = JSON.stringify(images);
+  localStorage.setItem("images", stringifiedImages);
+}
+
+function getFromLocalStorage() {
+  let data = localStorage.getItem("images");
+  let parsedImages = JSON.parse(data);
+  if (parsedImages) {
+    images = parsedImages;
+  }
+}
 
 function renderImages() {
   //renders images to page
-  for (let i = 0; i < 3; i++) {
-    let img = document.createElement("img");
-    let random = Math.floor(Math.random() * images.length);
-    img.src = images[random].src;
-    img.id = images[random].name;
-    img.addEventListener("click", handleClick); //adds event listener to image
-    document.getElementById("images").appendChild(img);
+  let randomImage1 = Math.floor(Math.random() * images.length);
+  let randomImage2 = Math.floor(Math.random() * images.length);
+  let randomImage3 = Math.floor(Math.random() * images.length);
+  while (
+    randomImage1 === randomImage2 ||
+    randomImage1 === randomImage3 ||
+    randomImage2 === randomImage3
+  ) {
+    randomImage1 = Math.floor(Math.random() * images.length);
+    randomImage2 = Math.floor(Math.random() * images.length);
+    randomImage3 = Math.floor(Math.random() * images.length);
   }
+  let image1 = document.createElement("img");
+  image1.src = images[randomImage1].src;
+  image1.id = images[randomImage1].name;
+  image1.addEventListener("click", handleClick);
+  document.getElementById("images").appendChild(image1);
+  let image2 = document.createElement("img");
+  image2.src = images[randomImage2].src;
+  image2.id = images[randomImage2].name;
+  image2.addEventListener("click", handleClick);
+  document.getElementById("images").appendChild(image2);
+  let image3 = document.createElement("img");
+  image3.src = images[randomImage3].src;
+  image3.id = images[randomImage3].name;
+  image3.addEventListener("click", handleClick);
+  document.getElementById("images").appendChild(image3);
+  images[randomImage1].timesShown++;
+  images[randomImage2].timesShown++;
+  images[randomImage3].timesShown++;
+
   if (clickCounter === 0) {
     document.getElementById("clickCounter").textContent = "View Results";
     document.querySelectorAll("img").forEach((img) => {
@@ -98,9 +135,6 @@ function handleClick(event) {
   }
   if (clickCounter === 0) {
     document.getElementById("clickCounter").textContent = "View Results";
-    document.querySelectorAll("img").forEach((img) => {
-      img.removeEventListener("click", handleClick);
-    });
   } else {
     clickCounter--;
   }
@@ -114,14 +148,26 @@ function removeClickHandler() {
     .getElementById("clickCounter")
     .removeEventListener("click", handleClick);
 }
-let button = document.getElementById("clickCounter");
-button.addEventListener("click", function () {
+
+let button = document.getElementById("clickCounter"); //button to view results
+
+button.addEventListener("click", function (e) {
+  let buttonClicked = false;
+  //adds event listener to button
   if (clickCounter === 0) {
     document.getElementById("clickCounter").textContent = "View Results";
     document.getElementById("images").removeEventListener("click", handleClick);
     addTableHeader();
     renderResults();
     renderChart();
+    buttonClicked = true;
+  }
+
+  if (clickCounter === 0) {
+    saveToLocalStorage();
+  }
+  if (buttonClicked === true) {
+    removeClickHandler();
   }
 });
 
@@ -129,15 +175,19 @@ function addTableHeader() {
   //adds table header to page
   let tableRow = document.createElement("tr");
   let tableHeader = document.createElement("th");
+  let tableHeader2 = document.createElement("th");
   tableHeader.textContent = "Image";
   tableRow.appendChild(tableHeader);
   tableHeader = document.createElement("th");
   tableHeader.textContent = "Times Clicked";
   tableRow.appendChild(tableHeader);
+  tableHeader2.textContent = "Times Shown";
+  tableRow.appendChild(tableHeader2);
   document.getElementById("results").appendChild(tableRow);
 }
 
 function renderResults() {
+  //renders results to page
   for (let i = 0; i < images.length; i++) {
     let tableRow = document.createElement("tr");
     let tableData = document.createElement("td");
@@ -146,22 +196,29 @@ function renderResults() {
     tableData = document.createElement("td");
     tableData.textContent = images[i].imgHasShown;
     tableRow.appendChild(tableData);
+    tableData = document.createElement("td");
+    tableData.textContent = images[i].timesShown;
+    tableRow.appendChild(tableData);
     document.getElementById("results").appendChild(tableRow);
   }
 }
 
 function renderChart() {
-  let imgClicked = [];
-  let imgShown = [];
+  //renders chart to page
+  let imgClicked = []; //array of images clicked
+  let imgShown = []; //array of images shown
   for (let i = 0; i < images.length; i++) {
-    imgClicked.push(images[i].imgHasShown);
-    imgShown.push(images[i].imgHasShown);
+    //loops through images array
+    imgClicked.push(images[i].imgHasShown); //adds number of times image has been clicked to array
+    imgShown.push(images[i].timesShown); //adds number of times image has been shown to array
   }
 
-  let ctx = document.getElementById("myChart").getContext("2d");
+  let ctx = document.getElementById("myChart").getContext("2d"); //creates chart
   let myChart = new Chart(ctx, {
+    //creates chart
     type: "bar",
     data: {
+      //data for chart
       labels: imagesName,
       datasets: [
         {
@@ -196,4 +253,3 @@ function renderChart() {
 
 createImages(); //calls createImages function
 renderImages(); //calls renderImages function
-// renderResults();
